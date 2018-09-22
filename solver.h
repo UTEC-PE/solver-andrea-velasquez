@@ -42,9 +42,17 @@ class Solver {
           }
           //input is operator
             // current node has an operator
-          if (current->isOperator()) return current->mergeOperator(c);
+          if (current->isOperator()){
+            if (!(c=='+' || c=='-')) return false; //Can't merge this operators
+            if (!current->mergeOperator(c)){ // current has * or / or ^
+              current->right = newnode;
+              current = current->right; // descend to right
+              current->left = new Node('0'); // set left node to 0 (case: 5*-3)
+              return true;
+            }
+          }
             // current node has a number
-              // current node is the first one
+              // current node is the first one (==root)
           if (current==root || weight[root->data]>=weight[c]){
             // new root
             newnode->left = root;

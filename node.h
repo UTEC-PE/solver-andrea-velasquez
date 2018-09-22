@@ -19,7 +19,7 @@ struct Node {
       return ::isOperator(this->data);
     };
     bool mergeOperator(char op){
-      if (!isOperator() ||  !(op=='+' || op=='-')) return false;
+      if (!(data=='+' || data=='-')) return false; // data is * or / or ^
       data = sumOperator(op, data);
       return true;
     }
