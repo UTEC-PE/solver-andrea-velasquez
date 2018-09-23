@@ -56,6 +56,7 @@ class Solver {
               current->left = new Node("0"); // set left node to 0 (case: 5*-3)
               return true;
             }
+            return true; //op merged
           }
             // current node has a number
               // current node is the first one (==root)
