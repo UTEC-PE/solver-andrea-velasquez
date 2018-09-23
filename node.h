@@ -2,31 +2,26 @@
 #define NODE_H
 
 #include <cctype> //isdigit ()
+#include <string>
 
 bool isOperator(char x);
 char sumOperator(char op1, char op2);
 
 struct Node {
-    char data;
+    std::string data;
     Node* left;
     Node* right;
 
-    Node(char data) : data(data) {
-        left = right = nullptr;
-    };
+    Node(std::string data) : data(data), left(nullptr), right(nullptr){};
 
     bool isOperator(){
-      return ::isOperator(this->data);
+      return ::isOperator(this->data[0]);
     };
     bool mergeOperator(char op){
-      if (!(data=='+' || data=='-')) return false; // data is * or / or ^
-      data = sumOperator(op, data);
+      if (!(data[0]=='+' || data[0]=='-')) return false; // data is * or / or ^
+      data = sumOperator(op, data[0]);
       return true;
     }
-};
-
-bool isOperator(char x){
-  return x=='+' ||  x=='-' ||  x=='/' ||  x=='*' ||  x=='^';
 };
 
 char sumOperator(char op1, char op2){
