@@ -26,6 +26,7 @@ class Solver {
         };
         Node* root;
         Node* current;
+        Solver* subtree;
 
         float operate(char op, float n1, float n2){
           switch (op){
@@ -39,7 +40,9 @@ class Solver {
         }
 
         float evaluate(Node* root){
+          if (!root) return 0;
           if (isdigit(root->data[0])) return stof(root->data);
+          //TODO: Simplificar
           switch (root->hasLeafs()) {
             //no numbers as children
             case 0: return operate(root->data[0], evaluate(root->left), evaluate(root->right));
@@ -55,20 +58,48 @@ class Solver {
 
 
     public:
-        Solver(): root(nullptr), current(nullptr){};
+        Solver(): root(nullptr), current(nullptr), subtree(nullptr){};
 
         bool insert(string c){
+          if (c[0]=='(') {
+            subtree = new Solver;
+            return true;
+          }
+          if (c[0]==')') {
+            //this
+            c = to_string(this->subtree->evaluate());
+            subtree = nullptr;
+          }
+          if (subtree){
+            this->subtree->insert(c); return true;
+          }
           Node* newnode = new Node(c);
         // empty tree
           if (!current) {
             if (!isdigit(c[0]) && (c[0])!='+' && (c[0])!='-') return false;
-            root = current = newnode;
+            root = newnode;
+            if (c[0]=='-'){
+              root->data = '-';
+              root->left = new Node("0");
+              current = root;
+              if (!isdigit(c[1])) return true;
+              // parenthesis returned a negative
+              c.erase(c.begin(), c.begin()+1); // erase '-' of negative number`
+              current = root->right = new Node(c);
+              return true;
+            }
+            current = root;
             return true;
           }
 
         // not empty tree
           //input is digit
-          if (isdigit(c[0])){
+          if (isdigit(c[0]) || isdigit(c[1])){
+            if (c[0]=='-' && isdigit(c[1])){
+              current->right = new Node("-");
+              current = current->right;
+              current->left = new Node("0");
+            }
             current->right = newnode;
             current = current->right; // descend to right
             return true;
@@ -95,6 +126,7 @@ class Solver {
           }
           // current node isn't root and input is heavier
           newnode->data = current->data;
+          //newnode->data = current->data;
           current->data = c;
           current->left = newnode;
           return true;
@@ -102,7 +134,7 @@ class Solver {
 
         float evaluate(){
           float ans = evaluate(root);
-          clear();
+          this->clear();
           return ans;
         };
 
@@ -148,6 +180,7 @@ class Solver {
       };
 
       void clear(){
+        subtree = nullptr;
         if (root) root->killSelf();
         root=current=nullptr;
       };
