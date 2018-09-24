@@ -40,7 +40,7 @@ class Solver {
         }
 
         float evaluate(Node* root){
-          if (!root) return 0;
+          if (!root) throw "No expression";
           if (isdigit(root->data[0])) return stof(root->data);
           //TODO: Simplificar
           switch (root->hasLeafs()) {
@@ -61,23 +61,17 @@ class Solver {
         Solver(): root(nullptr), current(nullptr), subtree(nullptr){};
 
         bool insert(string c){
-          if (c[0]==')' || c[0]=='(' || subtree){
-            auto tmp = this;
-            if (subtree){
-              while (tmp->subtree->subtree) tmp=subtree;
-            }
-            if (c[0]!=')' && c[0]!='(') {tmp->subtree->insert(c); return true;}
-            if (c[0]==')') {
-              c = to_string(tmp->subtree->evaluate());
-              tmp->subtree = nullptr;
-            }
-            if (c[0]=='(') {
-              tmp = this;
-              while (tmp->subtree) tmp=subtree;
-              tmp->subtree = new Solver;
+          if (c[0]=='(' || subtree){
+            if (c[0]!=')') { // '('
+              if (subtree) {subtree->insert(c); return true;}
+              if (c[0]=='(') subtree = new Solver;
               return true;
             }
-
+            // c is ')'
+            if (subtree->subtree) { subtree->insert(c); return true; }
+            c = to_string(subtree->evaluate());
+            subtree = nullptr;
+            //newnode initializes with c, c will be inserted in tree of subtree
           }
 
           Node* newnode = new Node(c);
