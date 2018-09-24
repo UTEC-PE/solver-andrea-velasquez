@@ -142,9 +142,14 @@ class Solver {
           map<char, float> var;
           string number = "";
           int counter = 0;
+          int parenthesis=0;
           for (char* c=expression; c!= expression + strlen(expression); c++){
             // c is operand
-            if (isOperator(*c)) this->insert(string(1, *c));
+            if (isOperator(*c)) {
+              this->insert(string(1, *c));
+              if (*c=='(') ++parenthesis;
+              else if (*c==')') --parenthesis;
+            }
             // c is digit or point (part of a number)
             else if (isdigit(*c) || *c=='.') {
               if (*c=='.' && !isdigit(*(c+1))) return counter; //incomplete decimal
@@ -169,6 +174,7 @@ class Solver {
             }
             ++counter;
           }
+        if (parenthesis!=0) throw "Error: unbalanced parenthesis";
         return -1;
       };
 
