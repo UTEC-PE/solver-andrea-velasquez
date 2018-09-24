@@ -14,7 +14,8 @@ void menu() {
       //char* str="7/4*((a+b)*a)+3";
       //char* str="7/4*((a+-+--b)*a)+3";
       //char str[]="2+(3)";
-      char str[]="2.4+(3+z)";
+      //char str[]="2.4+(3+z)";
+      char str[]= "4*((3+4))";
       //char* str="7/4*((a+b)^4*a)+3";
 
       Solver calculator;
@@ -25,8 +26,7 @@ void menu() {
 int main(int argc, char const *argv[]) {
     menu();
 
-    cout << "\nPress enter to continue ..."; 
-    cin.get(); 
+    cout << "\nPress enter to continue ...";
+    cin.get();
     return EXIT_SUCCESS;
 }
-

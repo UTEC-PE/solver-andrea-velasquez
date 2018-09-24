@@ -61,18 +61,25 @@ class Solver {
         Solver(): root(nullptr), current(nullptr), subtree(nullptr){};
 
         bool insert(string c){
-          if (c[0]=='(') {
-            subtree = new Solver;
-            return true;
+          if (c[0]==')' || c[0]=='(' || subtree){
+            auto tmp = this;
+            if (subtree){
+              while (tmp->subtree->subtree) tmp=subtree;
+            }
+            if (c[0]!=')' && c[0]!='(') {tmp->subtree->insert(c); return true;}
+            if (c[0]==')') {
+              c = to_string(tmp->subtree->evaluate());
+              tmp->subtree = nullptr;
+            }
+            if (c[0]=='(') {
+              tmp = this;
+              while (tmp->subtree) tmp=subtree;
+              tmp->subtree = new Solver;
+              return true;
+            }
+
           }
-          if (c[0]==')') {
-            //this
-            c = to_string(this->subtree->evaluate());
-            subtree = nullptr;
-          }
-          if (subtree){
-            this->subtree->insert(c); return true;
-          }
+
           Node* newnode = new Node(c);
         // empty tree
           if (!current) {
