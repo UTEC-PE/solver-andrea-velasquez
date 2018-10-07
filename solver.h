@@ -3,6 +3,7 @@
 
 #include "node.h"
 #include <string>
+#include <string.h>
 #include <iostream>
 #include <map>
 #include <cctype> // isdigit()
